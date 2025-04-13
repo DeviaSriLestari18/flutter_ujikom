@@ -2,31 +2,27 @@ import '../../dashboard/views/dashboard_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Tambahan
 import '../../../utils/api.dart';
 
 class LoginController extends GetxController {
-  //TODO: Implement LoginController
-
   final _getConnect = GetConnect();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final authToken = GetStorage();
 
   @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
   void onClose() {
     emailController.dispose();
     passwordController.dispose();
     super.onClose();
+  }
+
+  // ✅ Fungsi simpan data user
+  void saveUserData(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_name', 'Guest'); // default name
+    await prefs.setString('user_email', email);
   }
 
   void loginNow() async {
@@ -36,9 +32,14 @@ class LoginController extends GetxController {
     });
 
     if (response.statusCode == 200) {
+      // ✅ Simpan token
       authToken.write('token', response.body['token']);
-      Get.offAll(() => const DashboardView());
 
+      // ✅ Simpan email (dan nama dummy)
+      saveUserData(emailController.text);
+
+      // ✅ Pindah ke dashboard
+      Get.offAll(() => const DashboardView());
     } else {
       Get.snackbar(
         'Error',
