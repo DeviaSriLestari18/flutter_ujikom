@@ -10,7 +10,7 @@ class ProfileView extends StatelessWidget {
     final ProfileController controller = Get.put(ProfileController());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8), // Grey soft background
+      backgroundColor: const Color(0xFFF2F4F8), 
       body: Obx(
         () => SafeArea(
           child: Center(
